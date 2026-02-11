@@ -1,0 +1,133 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#000;
+    overflow:hidden;
+    font-family:Segoe UI,sans-serif;
+}
+
+#game{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    background: radial-gradient(circle at bottom,#0d0d1f 0%,#000 85%);
+    overflow:hidden;
+}
+
+/* Title */
+#title{
+    position:absolute;
+    top:38%;
+    width:100%;
+    text-align:center;
+    font-size:28px;
+    color:white;
+    letter-spacing:3px;
+    z-index:5;
+    pointer-events:none;
+}
+
+/* Stars */
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    border-radius:50%;
+    opacity:0.6;
+    pointer-events:none;
+}
+
+/* Character */
+.character{
+    position:absolute;
+    bottom:60px;
+    left:50%;
+    transform:translateX(-50%);
+    width:60px;
+    height:80px;
+    background:linear-gradient(to top,#fff4d6,#ffffff);
+    border-radius:30px 30px 20px 20px;
+    box-shadow:0 0 30px #ffd46b;
+    z-index:3;
+    pointer-events:none;
+}
+
+.wing{
+    position:absolute;
+    width:45px;
+    height:45px;
+    background: radial-gradient(circle,#ffe29a,transparent);
+    border-radius:50%;
+    top:20px;
+    animation:wingGlow 2s infinite alternate;
+    pointer-events:none;
+}
+
+.wing.left{ left:-35px; }
+.wing.right{ right:-35px; }
+
+@keyframes wingGlow{
+    from{opacity:0.5;transform:scale(0.9);}
+    to{opacity:1;transform:scale(1.1);}
+}
+
+/* Light */
+.light{
+    position:absolute;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background: radial-gradient(circle,#fff8d6,#ffd46b);
+    box-shadow:0 0 25px #ffd46b;
+    z-index:10;
+    touch-action:none;
+}
+
+/* Trail */
+.chainTrail{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:#ffe9a6;
+    border-radius:50%;
+    box-shadow:0 0 10px #ffd46b;
+    pointer-events:none;
+    z-index:4;
+}
+
+/* Flow */
+.flow{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:#fff4c2;
+    border-radius:50%;
+    box-shadow:0 0 15px #ffd46b;
+    pointer-events:none;
+    z-index:4;
+}
+
+/* Overlay */
+#overlay{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: radial-gradient(circle at center,#3b2f12,#000);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:white;
+    font-size:26px;
+    opacity:0;
+    transition:opacity 2s;
+    z-index:20;
+    pointer-events:none;
+}

@@ -3,263 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Light Collector 🌌</title>
-
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-
-body{
-    overflow:hidden;
-    height:100vh;
-    font-family:Segoe UI, sans-serif;
-    background: radial-gradient(circle at bottom,#0d0d1f 0%,#000 85%);
-    color:white;
-}
-
-/* ===== Stars ===== */
-.star{
-    position:absolute;
-    width:2px;height:2px;
-    background:white;
-    border-radius:50%;
-    opacity:0.6;
-    animation: twinkle 3s infinite alternate;
-    pointer-events:none;
-}
-
-@keyframes twinkle{
-    from{opacity:0.2;}
-    to{opacity:1;}
-}
-
-/* ===== Title ===== */
-#title{
-    position:absolute;
-    top:38%;
-    width:100%;
-    text-align:center;
-    font-size:30px;
-    letter-spacing:3px;
-    opacity:0.9;
-    transition:opacity 1s;
-    z-index:20;
-}
-
-/* ===== Character ===== */
-.character{
-    position:absolute;
-    bottom:50px;
-    left:50%;
-    transform:translateX(-50%);
-    width:60px;
-    height:80px;
-    background:linear-gradient(to top,#fff4d6,#ffffff);
-    border-radius:30px 30px 20px 20px;
-    box-shadow:0 0 30px #ffe29a;
-    z-index:10;
-    transition:box-shadow 0.5s;
-}
-
-/* Wings */
-.wing{
-    position:absolute;
-    width:45px;height:45px;
-    background: radial-gradient(circle,#ffe29a,transparent);
-    border-radius:50%;
-    top:20px;
-    animation: wingGlow 2s infinite alternate;
-}
-
-.wing.left{left:-35px;}
-.wing.right{right:-35px;}
-
-@keyframes wingGlow{
-    from{opacity:0.5;transform:scale(0.9);}
-    to{opacity:1;transform:scale(1.1);}
-}
-
-/* ===== Light ===== */
-.light{
-    position:absolute;
-    width:32px;height:32px;
-    border-radius:50%;
-    background: radial-gradient(circle,#fff8d6,#ffd46b);
-    box-shadow:0 0 25px #ffd46b;
-    cursor:pointer;
-    z-index:50;
-}
-
-/* Trail antar light */
-.chainTrail{
-    position:absolute;
-    width:6px;height:6px;
-    background:#ffe9a6;
-    border-radius:50%;
-    pointer-events:none;
-    box-shadow:0 0 10px #ffd46b;
-    z-index:40;
-}
-
-/* Flow ke karakter */
-.flow{
-    position:absolute;
-    width:8px;height:8px;
-    background:#fff4c2;
-    border-radius:50%;
-    box-shadow:0 0 15px #ffd46b;
-    pointer-events:none;
-    z-index:30;
-}
-
-/* ===== Ending ===== */
-#finalOverlay{
-    position:absolute;
-    top:0;left:0;
-    width:100%;height:100%;
-    background: radial-gradient(circle at center,#3b2f12,#000);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    font-size:26px;
-    opacity:0;
-    transition:opacity 3s;
-    z-index:100;
-}
-</style>
+<title>Light Collector</title>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div id="title">Light Collector</div>
+<div id="game">
 
-<div class="character" id="character">
-    <div class="wing left"></div>
-    <div class="wing right"></div>
+    <div id="title">Light Collector</div>
+
+    <div id="sky"></div>
+
+    <div class="character" id="character">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
+    </div>
+
+    <div id="overlay">
+        Kamu adalah cahaya kecil<br>
+        yang membuat duniaku terang ✨
+    </div>
+
 </div>
 
-<div id="finalOverlay">
-    Kamu adalah cahaya kecil<br>
-    yang membuat duniaku terang ✨
-</div>
-
-<script>
-let score=0;
-let maxScore=8;
-let lastLightPosition=null;
-
-/* ===== Stars ===== */
-for(let i=0;i<120;i++){
-    let star=document.createElement("div");
-    star.className="star";
-    star.style.left=Math.random()*100+"vw";
-    star.style.top=Math.random()*100+"vh";
-    star.style.animationDelay=Math.random()*3+"s";
-    document.body.appendChild(star);
-}
-
-/* ===== Spawn Light ===== */
-function spawnLight(){
-    let light=document.createElement("div");
-    light.className="light";
-
-    light.style.left=Math.random()*(window.innerWidth-40)+"px";
-    light.style.top=Math.random()*(window.innerHeight-250)+"px";
-
-    document.body.appendChild(light);
-
-    light.addEventListener("pointerdown",()=>{
-        collectLight(light);
-    });
-}
-
-/* ===== Collect ===== */
-function collectLight(light){
-
-    const rect=light.getBoundingClientRect();
-    const currentPos={
-        x:rect.left+rect.width/2,
-        y:rect.top+rect.height/2
-    };
-
-    if(lastLightPosition){
-        createChainTrail(lastLightPosition,currentPos);
-    }
-
-    createFlowToCharacter(currentPos);
-
-    lastLightPosition=currentPos;
-
-    light.remove();
-    score++;
-
-    glowCharacter();
-
-    if(score>=maxScore){
-        endGame();
-    }else{
-        spawnLight();
-    }
-}
-
-/* Trail antar light */
-function createChainTrail(start,end){
-    const steps=25;
-    for(let i=0;i<steps;i++){
-        let dot=document.createElement("div");
-        dot.className="chainTrail";
-
-        let x=start.x+(end.x-start.x)*(i/steps);
-        let y=start.y+(end.y-start.y)*(i/steps);
-
-        dot.style.left=x+"px";
-        dot.style.top=y+"px";
-
-        document.body.appendChild(dot);
-        setTimeout(()=>dot.remove(),500);
-    }
-}
-
-/* Flow ke karakter */
-function createFlowToCharacter(start){
-    const char=document.getElementById("character");
-    const rect=char.getBoundingClientRect();
-
-    const targetX=rect.left+rect.width/2;
-    const targetY=rect.top+rect.height/3;
-
-    const flow=document.createElement("div");
-    flow.className="flow";
-    flow.style.left=start.x+"px";
-    flow.style.top=start.y+"px";
-
-    document.body.appendChild(flow);
-
-    flow.animate([
-        {transform:"translate(0,0)",opacity:1},
-        {transform:`translate(${targetX-start.x}px,${targetY-start.y}px)`,opacity:0}
-    ],{duration:700,easing:"ease-out"});
-
-    setTimeout(()=>flow.remove(),700);
-}
-
-/* Glow karakter */
-function glowCharacter(){
-    const char=document.getElementById("character");
-    char.style.boxShadow=`0 0 ${30+score*8}px #ffd46b`;
-}
-
-/* Ending */
-function endGame(){
-    document.getElementById("title").style.opacity=0;
-    setTimeout(()=>{
-        document.getElementById("finalOverlay").style.opacity=1;
-    },1000);
-}
-
-/* Start */
-spawnLight();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
