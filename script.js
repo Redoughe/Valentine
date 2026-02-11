@@ -8,7 +8,6 @@ const title = document.getElementById("title");
 
 /* Pesan progres */
 const messages = [
-    "Setiap cahaya kecil mengingatkanku padamu ✨",
     "Walau kita LDR, kamu tetap dekat di hati 🌙",
     "Kamu seperti cahaya di dunia gelapku 🌌",
     "Aku tidak butuh banyak hal, cukup kamu 🤍",
@@ -25,7 +24,7 @@ messageBox.style.textAlign = "center";
 messageBox.style.color = "white";
 messageBox.style.fontSize = "18px";
 messageBox.style.opacity = "0";
-messageBox.style.transition = "opacity 0.8s";
+messageBox.style.transition = "opacity 1s";
 messageBox.style.pointerEvents = "none";
 messageBox.style.zIndex = "6";
 
