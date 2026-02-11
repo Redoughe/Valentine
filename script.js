@@ -1,11 +1,35 @@
 let score = 0;
-let maxScore = 8;
-let lastLight = null;
+let maxScore = 6;
 
 const game = document.getElementById("game");
 const character = document.getElementById("character");
 const overlay = document.getElementById("overlay");
 const title = document.getElementById("title");
+
+/* Pesan progres */
+const messages = [
+    "Setiap cahaya kecil mengingatkanku padamu ✨",
+    "Walau kita LDR, kamu tetap dekat di hati 🌙",
+    "Kamu seperti cahaya di dunia gelapku 🌌",
+    "Aku tidak butuh banyak hal, cukup kamu 🤍",
+    "Jarak hanya angka, perasaan tetap sama 💫",
+    "Terima kasih sudah hadir di hidupku 💛"
+];
+
+/* Buat elemen pesan */
+const messageBox = document.createElement("div");
+messageBox.style.position = "absolute";
+messageBox.style.top = "25%";
+messageBox.style.width = "100%";
+messageBox.style.textAlign = "center";
+messageBox.style.color = "white";
+messageBox.style.fontSize = "18px";
+messageBox.style.opacity = "0";
+messageBox.style.transition = "opacity 0.8s";
+messageBox.style.pointerEvents = "none";
+messageBox.style.zIndex = "6";
+
+game.appendChild(messageBox);
 
 /* Stars */
 for(let i=0;i<120;i++){
@@ -41,18 +65,14 @@ function collectLight(light){
         y: rect.top + rect.height/2
     };
 
-    if(lastLight){
-        createTrail(lastLight,pos);
-    }
-
     createFlow(pos);
-
-    lastLight = pos;
 
     light.remove();
     score++;
 
-    character.style.boxShadow = `0 0 ${30+score*10}px #ffd46b`;
+    showMessage(score-1);
+
+    character.style.boxShadow = `0 0 ${30+score*12}px #ffd46b`;
 
     if(score >= maxScore){
         endGame();
@@ -61,22 +81,7 @@ function collectLight(light){
     }
 }
 
-/* Trail */
-function createTrail(start,end){
-    const steps = 25;
-    for(let i=0;i<steps;i++){
-        let dot=document.createElement("div");
-        dot.className="chainTrail";
-
-        dot.style.left = start.x + (end.x-start.x)*(i/steps) + "px";
-        dot.style.top  = start.y + (end.y-start.y)*(i/steps) + "px";
-
-        game.appendChild(dot);
-        setTimeout(()=>dot.remove(),500);
-    }
-}
-
-/* Flow */
+/* Flow ke karakter */
 function createFlow(start){
     const rect = character.getBoundingClientRect();
 
@@ -98,10 +103,32 @@ function createFlow(start){
     setTimeout(()=>flow.remove(),700);
 }
 
-/* Ending */
+/* Tampilkan pesan */
+function showMessage(index){
+    if(messages[index]){
+        messageBox.textContent = messages[index];
+        messageBox.style.opacity = "1";
+
+        setTimeout(()=>{
+            messageBox.style.opacity = "0";
+        },2500);
+    }
+}
+
+/* Ending cinematic */
 function endGame(){
     title.style.opacity=0;
-    setTimeout(()=>overlay.style.opacity=1,800);
+    messageBox.style.opacity=0;
+
+    setTimeout(()=>{
+        overlay.innerHTML = `
+            Untuk kamu 🤍<br><br>
+            Di antara jutaan bintang,<br>
+            aku tetap memilih kamu.<br><br>
+            Happy Valentine ✨
+        `;
+        overlay.style.opacity=1;
+    },1000);
 }
 
 spawnLight();
