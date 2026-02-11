@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Small Light For You</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    font-family:'Poppins',sans-serif;
+    background:radial-gradient(circle at bottom,#1a1f3c,#0d1025 70%);
+    height:100vh;
+    color:white;
+}
+
+/* ===== STAR BACKGROUND ===== */
+.stars{
+    position:fixed;
+    width:100%;
+    height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    border-radius:50%;
+    animation:twinkle 3s infinite ease-in-out;
+}
+@keyframes twinkle{
+    0%,100%{opacity:0.2;}
+    50%{opacity:1;}
+}
+
+/* ===== UI ===== */
+.container{
+    position:relative;
+    z-index:20;
+    text-align:center;
+    padding-top:60px;
+}
+h1{
+    font-family:'Dancing Script',cursive;
+    font-size:34px;
+}
+.counter{
+    font-size:14px;
+}
+
+/* ===== MESSAGE ===== */
+#message{
+    position:absolute;
+    bottom:170px;
+    width:100%;
+    text-align:center;
+    opacity:0;
+    transition:opacity .6s ease;
+    z-index:30;
+}
+
+/* ===== LIGHT ===== */
+.light{
+    position:absolute;
+    width:36px;
+    height:36px;
+    background:radial-gradient(circle,#fff7cc,#ffd700);
+    border-radius:50%;
+    box-shadow:0 0 25px #ffe066,0 0 60px #ffd700;
+    cursor:pointer;
+    animation:float 3s infinite ease-in-out;
+    z-index:50;
+}
+@keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+}
+
+/* ===== TRAIL ===== */
+.trail{
+    position:absolute;
+    width:14px;
+    height:14px;
+    background:radial-gradient(circle,#fff7cc,#ffd700);
+    border-radius:50%;
+    pointer-events:none;
+    animation:fadeTrail .8s forwards;
+    z-index:5;
+}
+@keyframes fadeTrail{
+    to{opacity:0;transform:scale(2);}
+}
+
+/* ===== FLOW PARTICLE ===== */
+.flow{
+    position:absolute;
+    width:8px;
+    height:8px;
+    background:gold;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:15;
+}
+
+/* ===== SILHOUETTE ===== */
+.silhouette{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:220px;
+    background:linear-gradient(to top,black,transparent);
+    pointer-events:none;
+    z-index:5;
+}
+
+/* ===== CHARACTER ===== */
+.character{
+    position:absolute;
+    bottom:60px;
+    left:50%;
+    transform:translateX(-50%);
+    width:70px;
+    height:110px;
+    background:black;
+    border-radius:40px 40px 20px 20px;
+    z-index:10;
+    box-shadow:0 0 20px rgba(255,223,100,0.2);
+}
+.character::before{
+    content:"";
+    position:absolute;
+    top:-40px;
+    left:50%;
+    transform:translateX(-50%);
+    width:60px;
+    height:60px;
+    background:black;
+    border-radius:50%;
+}
+
+/* ===== WINGS ===== */
+.wing{
+    position:absolute;
+    width:45px;
+    height:70px;
+    background:radial-gradient(circle at center,rgba(255,230,150,.9),transparent);
+    border-radius:50%;
+    opacity:0;
+    transition:opacity 1.2s ease;
+    pointer-events:none;
+}
+.left{left:-40px;top:20px;}
+.right{right:-40px;top:20px;}
+
+/* ===== ENDING ===== */
+#finalOverlay{
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:radial-gradient(circle,#fff5cc,#ffffff);
+    opacity:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:#333;
+    font-family:'Dancing Script',cursive;
+    font-size:28px;
+    transition:opacity 2s ease;
+    z-index:100;
+}
+</style>
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<div class="container">
+    <h1>Collect the Light ✨</h1>
+    <div class="counter">Light: <span id="count">0</span>/8</div>
+</div>
+
+<div id="message"></div>
+
+<div class="silhouette"></div>
+<div class="character">
+    <div class="wing left"></div>
+    <div class="wing right"></div>
+</div>
+
+<div id="finalOverlay">
+    <div>
+        🌅<br>
+        Kalau jarak itu gelap...<br>
+        kita bisa jadi cahaya kecil satu sama lain.<br><br>
+        I'm really happy we're starting this. 🤍
+    </div>
+</div>
+
+<audio id="clickSound">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b6c7b.mp3?filename=soft-chime-1-102092.mp3">
+</audio>
+
+<script>
+/* ===== STARS ===== */
+const starContainer=document.querySelector(".stars");
+for(let i=0;i<120;i++){
+ let s=document.createElement("div");
+ s.className="star";
+ s.style.left=Math.random()*window.innerWidth+"px";
+ s.style.top=Math.random()*window.innerHeight+"px";
+ s.style.animationDuration=(2+Math.random()*3)+"s";
+ starContainer.appendChild(s);
+}
+
+/* ===== TRAIL FOLLOW ===== */
+function createTrail(x,y){
+ let t=document.createElement("div");
+ t.className="trail";
+ t.style.left=x+"px";
+ t.style.top=y+"px";
+ document.body.appendChild(t);
+ setTimeout(()=>t.remove(),800);
+}
+document.addEventListener("mousemove",e=>createTrail(e.clientX,e.clientY));
+document.addEventListener("touchmove",e=>{
+ let touch=e.touches[0];
+ createTrail(touch.clientX,touch.clientY);
+});
+
+/* ===== GAME ===== */
+const messages=[
+"aku senang kenal kamu",
+"kamu bikin hari terasa hangat",
+"rasanya nyaman ngobrol sama kamu",
+"terima kasih sudah hadir",
+"aku suka cara kamu tertawa",
+"kamu itu seperti vanilla",
+"meski jarak ada, rasa tetap sampai",
+"semoga kita tumbuh pelan-pelan"
+];
+
+let count=0;
+const maxLight=8;
+const messageBox=document.getElementById("message");
+const counter=document.getElementById("count");
+const clickSound=document.getElementById("clickSound");
+const wings=document.querySelectorAll(".wing");
+const finalOverlay=document.getElementById("finalOverlay");
+
+function createLight(){
+ let light=document.createElement("div");
+ light.className="light";
+
+ light.style.left=Math.random()*(window.innerWidth-60)+"px";
+ light.style.top=Math.random()*(window.innerHeight-300)+"px";
+
+ function handleClick(){
+  clickSound.currentTime=0;
+  clickSound.play();
+
+  messageBox.innerText=messages[count];
+  messageBox.style.opacity=1;
+
+  createFlow(light);
+
+  count++;
+  counter.innerText=count;
+  light.remove();
+
+  if(count===maxLight){
+      wings.forEach(w=>w.style.opacity=1);
+      setTimeout(()=>finalOverlay.style.opacity=1,1500);
+  }else{
+      setTimeout(createLight,600);
+  }
+ }
+
+ light.addEventListener("click",handleClick);
+ light.addEventListener("touchstart",handleClick);
+
+ document.body.appendChild(light);
+}
+
+function createFlow(light){
+ const character=document.querySelector(".character");
+ const rect=character.getBoundingClientRect();
+ const lightRect=light.getBoundingClientRect();
+
+ const flow=document.createElement("div");
+ flow.className="flow";
+ flow.style.left=lightRect.left+"px";
+ flow.style.top=lightRect.top+"px";
+ document.body.appendChild(flow);
+
+ flow.animate([
+   {transform:"translate(0,0)",opacity:1},
+   {
+     transform:`translate(${rect.left+rect.width/2-lightRect.left}px,
+                          ${rect.top+rect.height/2-lightRect.top}px)`,
+     opacity:0.2
+   }
+ ],{
+   duration:700,
+   easing:"ease-out"
+ });
+
+ setTimeout(()=>flow.remove(),700);
+}
+
+createLight();
+</script>
+
+</body>
+</html>
