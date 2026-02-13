@@ -8,11 +8,11 @@ const title = document.getElementById("title");
 
 /* Pesan progres */
 const messages = [
-    "Walau kita LDR, kamu tetap dekat di hati 🌙",
-    "Kamu seperti cahaya di dunia gelapku 🌌",
-    "Aku tidak butuh banyak hal, cukup kamu 🤍",
-    "Jarak hanya angka, perasaan tetap sama 💫",
-    "Terima kasih sudah hadir di hidupku 💛"
+    "Awal kisah kita memang aneh",
+    "",
+    "",
+    "Ikan hiu di atas genteng",
+    "Love you seng"
 ];
 
 /* Buat elemen pesan */
