@@ -8,9 +8,9 @@ const title = document.getElementById("title");
 
 /* Pesan progres */
 const messages = [
-    "Awal kisah kita memang aneh",
-    "",
-    "",
+    "Se plenger nya kita",
+    "Se absurd apapun kita",
+    "Kita tetaplah kita",
     "Ikan hiu di atas genteng",
     "Love you seng"
 ];
@@ -121,14 +121,15 @@ function endGame(){
 
     setTimeout(()=>{
         overlay.innerHTML = `
-            Untuk kamu 🤍<br><br>
-            Di antara jutaan bintang,<br>
-            aku tetap memilih kamu.<br><br>
-            Happy Valentine ✨
+            Bagaimanapun keadaannya<br><br>
+            Aku bakal selalu berusaha buat kita,<br>
+            Terima kasih sudah mau nerima aku.<br><br>
+            Happy Valentine sengku
         `;
         overlay.style.opacity=1;
     },1000);
 }
 
 spawnLight();
+
 
