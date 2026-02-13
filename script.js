@@ -8,11 +8,11 @@ const title = document.getElementById("title");
 
 /* Pesan progres */
 const messages = [
-    "Se plenger nya kita",
+    "Se plenger apapun kita",
     "Se absurd apapun kita",
-    "Kita tetaplah kita",
+    "Kita tetap kita❤️",
     "Ikan hiu di atas genteng",
-    "Love you seng"
+    "Love you seng😘"
 ];
 
 /* Buat elemen pesan */
@@ -122,9 +122,9 @@ function endGame(){
     setTimeout(()=>{
         overlay.innerHTML = `
             Bagaimanapun keadaannya<br><br>
-            Aku bakal selalu berusaha buat kita,<br>
-            Terima kasih sudah mau nerima aku.<br><br>
-            Happy Valentine sengku
+            I will fight for us seng,<br>
+            Makasih sudah mau nerima aku.<br><br>
+            Happy Valentine sengku🤍
         `;
         overlay.style.opacity=1;
     },1000);
